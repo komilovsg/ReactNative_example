@@ -1,56 +1,117 @@
 import React, {useState} from 'react';
-import {SafeAreaView, View, Text, TextInput, Button} from 'react-native';
+import {SafeAreaView, View, Text, TextInput, Button, Alert} from 'react-native';
 import {useStyles} from './main-page.styles';
+import {
+  Passkey,
+  PasskeyCreateResult,
+  PasskeyGetResult,
+} from 'react-native-passkey';
 
 export const MainPage = () => {
-  // Состояние для переключения между регистрацией и логином
-  const [isLogin, setIsLogin] = useState(true);
-  const [email, setEmail] = useState('');
   const styles = useStyles();
+  const [email, setEmail] = useState('');
 
-  const handleLoginPress = () => {
-    setIsLogin(true);
-  };
+  async function fetchChallenge(endpoint: string): Promise<any> {
+    try {
+      const response = await fetch(
+        `http://localhost:3000${endpoint}?email=${email}`,
+      );
+      if (!response.ok) throw new Error('Failed to fetch challenge');
+      return response.json();
+    } catch (error) {
+      console.error('Error fetching challenge:', error);
+      throw error;
+    }
+  }
 
-  const handleRegisterPress = () => {
-    setIsLogin(false);
-  };
+  async function registerPasskey() {
+    try {
+      const options = await fetchChallenge('/api/challenge');
+
+      const response: PasskeyCreateResult = await Passkey.create({
+        challenge: options.challenge,
+        user: {
+          id: email,
+          name: email,
+          displayName: email,
+        },
+        rp: {
+          id: 'localhost',
+          name: 'Passkey Example App',
+        },
+        pubKeyCredParams: [],
+      });
+
+      const validationResponse = await fetch(
+        'http://localhost:3000/api/passkey/register',
+        {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify(response),
+        },
+      );
+
+      const result = await validationResponse.json();
+      if (result.status === 'success') {
+        Alert.alert('Success', 'Passkey registered successfully!');
+      } else {
+        Alert.alert('Error', 'Failed to register passkey.');
+      }
+    } catch (error) {
+      console.error('Error during registration:', error);
+      Alert.alert('Error', 'Failed to register passkey.');
+    }
+  }
+
+  async function authenticateWithPasskey() {
+    try {
+      const options = await fetchChallenge('/api/challenge/login');
+
+      const response: PasskeyGetResult = await Passkey.get({
+        challenge: options.challenge,
+        rpId: 'localhost',
+      });
+
+      const validationResponse = await fetch(
+        'http://localhost:3000/api/passkey/authenticate',
+        {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify(response),
+        },
+      );
+
+      const result = await validationResponse.json();
+      if (result.status === 'success') {
+        Alert.alert('Success', 'You are authenticated!');
+      } else {
+        Alert.alert('Error', 'Authentication failed.');
+      }
+    } catch (error) {
+      console.error('Failed to authenticate:', error);
+      Alert.alert('Error', 'Authentication failed.');
+    }
+  }
 
   return (
     <SafeAreaView style={styles.sectionContainer}>
-      <Text style={styles.headerText}>Hello, it’s Test Project</Text>
-      <Text style={styles.headerTitle}>Passkey Example</Text>
+      <Text style={styles.headerText}>Passkey Example</Text>
+      <Text style={styles.headerTitle}>Secure Authentication</Text>
 
       <View style={styles.viewContainer}>
-        {/* Кнопки для Login и Register */}
-        {isLogin ? (
-          <>
-            <Button title="Login" onPress={handleLoginPress} color="#4CAF50" />
-            <Text style={styles.orText}>or</Text>
-            <Button
-              title="Register"
-              onPress={handleRegisterPress}
-              color="#2196F3"
-            />
-          </>
-        ) : (
-          <>
-            {/* Кнопки скрываются, когда мы в режиме регистрации */}
-            <Button title="Login" onPress={handleLoginPress} color="#4CAF50" />
-            <TextInput
-              style={styles.textInput}
-              placeholder="Enter Your Email"
-              value={email}
-              onChangeText={setEmail}
-              keyboardType="email-address"
-            />
-            <Button
-              title="Register"
-              onPress={handleRegisterPress}
-              color="#2196F3"
-            />
-          </>
-        )}
+        <TextInput
+          style={styles.textInput}
+          keyboardType="email-address"
+          placeholder="Enter Your Email"
+          value={email}
+          onChangeText={setEmail}
+        />
+        <Button title="Register" onPress={registerPasskey} />
+        <Button title="Login" onPress={authenticateWithPasskey} />
       </View>
     </SafeAreaView>
   );
