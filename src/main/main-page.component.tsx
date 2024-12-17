@@ -1,9 +1,8 @@
 import React, {useState} from 'react';
 import {SafeAreaView, View, Text, TextInput, Button} from 'react-native';
-
 import {useStyles} from './main-page.styles';
 
-const MainPage = () => {
+export const MainPage = () => {
   // Состояние для переключения между регистрацией и логином
   const [isLogin, setIsLogin] = useState(true);
   const [email, setEmail] = useState('');
@@ -56,5 +55,3 @@ const MainPage = () => {
     </SafeAreaView>
   );
 };
-
-export default MainPage;
