@@ -5,8 +5,9 @@ import {
   TextInput,
   TouchableOpacity,
 } from 'react-native';
-import React from 'react';
+import React, {useState} from 'react';
 import {NativeStackScreenProps} from '@react-navigation/native-stack';
+import DatePicker from 'react-native-date-picker';
 
 type RootStackParamList = {
   Home: undefined;
@@ -15,6 +16,10 @@ type RootStackParamList = {
 type Props = NativeStackScreenProps<RootStackParamList, 'Home'>;
 
 const RegisterScreen: React.FC<Props> = ({navigation}) => {
+  const [date, setDate] = useState(new Date());
+  const [open, setOpen] = useState(false);
+  const [dobLabel, setDobLabel] = useState('Date of Birth');
+
   return (
     <SafeAreaView
       style={{
@@ -34,7 +39,7 @@ const RegisterScreen: React.FC<Props> = ({navigation}) => {
       <View style={{flex: 1, justifyContent: 'center', alignItems: 'center'}}>
         <View style={{gap: 5, width: '90%'}}>
           <TextInput
-            placeholder="Name"
+            placeholder="Full Name"
             style={{borderWidth: 1, width: '100%', padding: 5, borderRadius: 7}}
           />
           <TextInput
@@ -46,8 +51,29 @@ const RegisterScreen: React.FC<Props> = ({navigation}) => {
             style={{borderWidth: 1, width: '100%', padding: 5, borderRadius: 7}}
           />
           <TextInput
-            placeholder="Phone number"
+            placeholder="Confirm Password"
             style={{borderWidth: 1, width: '100%', padding: 5, borderRadius: 7}}
+          />
+          <TouchableOpacity
+            style={{borderWidth: 1, width: '100%', padding: 5, borderRadius: 7}}
+            onPress={() => setOpen(true)}>
+            <Text style={{color: 'gray'}}>{dobLabel}</Text>
+          </TouchableOpacity>
+          <DatePicker
+            modal
+            open={open}
+            date={date}
+            mode={'date'}
+            maximumDate={new Date('2005-01-01')}
+            minimumDate={new Date('1970-01-01')}
+            onConfirm={date => {
+              setOpen(false);
+              setDate(date);
+              setDobLabel(date.toDateString());
+            }}
+            onCancel={() => {
+              setOpen(false);
+            }}
           />
           <TouchableOpacity
             onPress={() => navigation.navigate('Home')}

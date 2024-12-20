@@ -34,12 +34,15 @@ const LoginScreen: React.FC<Props> = ({navigation}) => {
       </View>
       <View style={{flex: 1, justifyContent: 'center', alignItems: 'center'}}>
         <View style={{gap: 5, width: '90%'}}>
+          <Text style={{fontSize: 24, fontWeight: '600', marginVertical: 10}}>
+            Login
+          </Text>
           <TextInput
-            placeholder="Email"
+            placeholder="&#65312; Email"
             style={{borderWidth: 1, width: '100%', padding: 5, borderRadius: 7}}
           />
           <TextInput
-            placeholder="Password"
+            placeholder="&#128272; Password"
             style={{borderWidth: 1, width: '100%', padding: 5, borderRadius: 7}}
           />
           <TouchableOpacity
@@ -60,24 +63,30 @@ const LoginScreen: React.FC<Props> = ({navigation}) => {
               Login
             </Text>
           </TouchableOpacity>
-          <TouchableOpacity
-            onPress={() => navigation.navigate('Register')}
+          <View
             style={{
-              backgroundColor: '#AD40AF',
-              padding: 5,
               width: '100%',
-              borderRadius: 5,
+              flexDirection: 'row',
+              justifyContent: 'space-between',
+              alignItems: 'center',
+              marginVertical: 10,
             }}>
-            <Text
-              style={{
-                fontWeight: 'bold',
-                fontSize: 18,
-                color: '#fff',
-                textAlign: 'center',
-              }}>
-              Registration
-            </Text>
-          </TouchableOpacity>
+            <Text>You are new?</Text>
+            <TouchableOpacity onPress={() => navigation.navigate('Register')}>
+              <Text
+                style={{
+                  backgroundColor: '#AD40AF',
+                  padding: 5,
+                  borderRadius: 5,
+                  fontWeight: 'bold',
+                  fontSize: 18,
+                  color: '#fff',
+                  textAlign: 'center',
+                }}>
+                Registration
+              </Text>
+            </TouchableOpacity>
+          </View>
         </View>
       </View>
     </SafeAreaView>
