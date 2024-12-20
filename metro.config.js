@@ -11,6 +11,10 @@ const {assetExts, sourceExts} = defaultConfig.resolver;
  * @type {import('metro-config').MetroConfig}
  */
 // const config = {};
+const {
+  wrapWithReanimatedMetroConfig,
+} = require('react-native-reanimated/metro-config');
+
 const config = {
   transformer: {
     babelTransformerPath: require.resolve(
