@@ -21,6 +21,7 @@ import {NativeStackNavigationProp} from '@react-navigation/native-stack';
 
 type RootStackParamList = {
   Home: undefined;
+  Onboarding: undefined;
   // добавьте другие экраны здесь
 };
 
@@ -105,7 +106,8 @@ export default function HomeScreen() {
             marginBottom: 20,
           }}>
           <Text>Hello KSG</Text>
-          <TouchableOpacity onPress={() => navigation.goBack()}>
+          {/* <TouchableOpacity onPress={() => navigation.goBack()}> */}
+          <TouchableOpacity onPress={() => navigation.navigate('Onboarding')}>
             <ImageBackground
               source={require('../assets/images/user-icon.png')}
               style={{width: 35, height: 35}}

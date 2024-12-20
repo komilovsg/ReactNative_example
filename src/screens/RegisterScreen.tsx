@@ -52,7 +52,7 @@ const RegisterScreen: React.FC<Props> = ({navigation}) => {
           <TouchableOpacity
             onPress={() => navigation.navigate('Home')}
             style={{
-              backgroundColor: 'blue',
+              backgroundColor: '#AD40AF',
               padding: 5,
               width: '100%',
               borderRadius: 5,
