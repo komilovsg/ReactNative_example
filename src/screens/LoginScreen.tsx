@@ -7,6 +7,10 @@ import {
 } from 'react-native';
 import React from 'react';
 import {NativeStackScreenProps} from '@react-navigation/native-stack';
+import {useContext} from 'react';
+import {AuthContext} from '../context/AuthContext';
+import {useState} from 'react';
+import InputField from '../components/InputField';
 
 type RootStackParamList = {
   Home: undefined;
@@ -16,6 +20,10 @@ type RootStackParamList = {
 type Props = NativeStackScreenProps<RootStackParamList, 'Home', 'Register'>;
 
 const LoginScreen: React.FC<Props> = ({navigation}) => {
+  const {login} = useContext(AuthContext);
+  const [email, setEmail] = useState<string>('');
+  const [password, setPassword] = useState<string>('');
+
   return (
     <SafeAreaView
       style={{
@@ -37,16 +45,20 @@ const LoginScreen: React.FC<Props> = ({navigation}) => {
           <Text style={{fontSize: 24, fontWeight: '600', marginVertical: 10}}>
             Login
           </Text>
-          <TextInput
-            placeholder="&#65312; Email"
-            style={{borderWidth: 1, width: '100%', padding: 5, borderRadius: 7}}
+          <InputField
+            label={'Email'}
+            inputType="email-address"
+            value={email}
+            onChangeText={(text: string) => setEmail(text)} // Make sure text is typed as string
           />
-          <TextInput
-            placeholder="&#128272; Password"
-            style={{borderWidth: 1, width: '100%', padding: 5, borderRadius: 7}}
+          <InputField
+            label={'Password'}
+            inputType="password"
+            value={password}
+            onChangeText={(text: string) => setPassword(text)} // Make sure text is typed as string
           />
           <TouchableOpacity
-            onPress={() => navigation.navigate('Home')}
+            onPress={() => login(email, password)} // This should now be fine since email and password are strings
             style={{
               backgroundColor: 'blue',
               padding: 5,

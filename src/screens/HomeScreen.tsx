@@ -1,4 +1,4 @@
-import React from 'react';
+import React, {useContext} from 'react';
 import {
   ScrollView,
   View,
@@ -18,6 +18,7 @@ import ListItems from '../components/ListItems';
 import {freeSongs, premiumSongs} from '../model/data';
 import {useNavigation} from '@react-navigation/native';
 import {NativeStackNavigationProp} from '@react-navigation/native-stack';
+import {AuthContext} from '../context/AuthContext';
 
 type RootStackParamList = {
   Home: undefined;
@@ -80,6 +81,7 @@ const dataOfSingers = [
 
 export default function HomeScreen() {
   const [posts, setPosts] = useState(1);
+  const {logout} = useContext(AuthContext);
 
   const navigation =
     useNavigation<NativeStackNavigationProp<RootStackParamList>>();
@@ -106,8 +108,10 @@ export default function HomeScreen() {
             marginBottom: 20,
           }}>
           <Text>Hello KSG</Text>
-          {/* <TouchableOpacity onPress={() => navigation.goBack()}> */}
-          <TouchableOpacity onPress={() => navigation.navigate('Onboarding')}>
+          <TouchableOpacity
+            onPress={() => {
+              logout();
+            }}>
             <ImageBackground
               source={require('../assets/images/user-icon.png')}
               style={{width: 35, height: 35}}
